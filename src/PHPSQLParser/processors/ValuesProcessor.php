@@ -52,12 +52,12 @@ use PHPSQLParser\utils\ExpressionType;
 class ValuesProcessor extends AbstractProcessor {
 
     protected function processExpressionList($unparsed) {
-        $processor = new ExpressionListProcessor();
+        $processor = new ExpressionListProcessor($this->options);
         return $processor->process($unparsed);
     }
 
     protected function processRecord($unparsed) {
-        $processor = new RecordProcessor();
+        $processor = new RecordProcessor($this->options);
         return $processor->process($unparsed);
     }
 
