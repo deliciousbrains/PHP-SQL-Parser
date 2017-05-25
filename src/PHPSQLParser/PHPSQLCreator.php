@@ -40,7 +40,6 @@
  */
 
 namespace PHPSQLParser;
-use PHPSQLParser\builders\AlterStatementBuilder;
 use PHPSQLParser\exceptions\UnsupportedFeatureException;
 use PHPSQLParser\builders\SelectStatementBuilder;
 use PHPSQLParser\builders\DeleteStatementBuilder;
@@ -55,6 +54,7 @@ use PHPSQLParser\builders\ShowStatementBuilder;
 use PHPSQLParser\builders\BracketStatementBuilder;
 use PHPSQLParser\builders\UnionStatementBuilder;
 use PHPSQLParser\builders\UnionAllStatementBuilder;
+use PHPSQLParser\builders\AlterStatementBuilder;
 
 /**
  * This class generates SQL from the output of the PHPSQLParser. 
@@ -128,9 +128,9 @@ class PHPSQLCreator {
             $this->created = $builder->build($parsed);
             break;
         case 'ALTER':
-	        $builder = new AlterStatementBuilder();
-	        $this->created = $builder->build($parsed);
-	        break;
+            $builder = new AlterStatementBuilder();
+            $this->created = $builder->build($parsed);
+            break;
         default:
             throw new UnsupportedFeatureException($k);
             break;
