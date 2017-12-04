@@ -211,7 +211,9 @@ class PHPSQLLexer {
         $i = 0;
         $cnt = count($tokens);
         $comment = false;
+        $backTicks = [];
         $in_string = false;
+
         while ($i < $cnt) {
 
             if (!isset($tokens[$i])) {
@@ -220,6 +222,23 @@ class PHPSQLLexer {
             }
 
             $token = $tokens[$i];
+
+            /*
+             * Check to see if we're inside a value (i.e. back ticks).
+             * If so inline # comments are not valid.
+             */
+            if ($comment === false && $this->isBacktick($token)) {
+                if (!empty($backTicks)) {
+                    $lastBacktick = array_pop($backTicks);
+                    if ($lastBacktick != $token) {
+                        $backTicks[] = $lastBacktick; // Re-add last back tick
+                        $backTicks[] = $token;
+                    }
+                } else {
+                    $backTicks[] = $token;
+                }
+            }
+
             if($token == "\"" || $token == "'") {
                 $in_string = !$in_string;
             }
@@ -241,7 +260,7 @@ class PHPSQLLexer {
                     $inline = true;
                 }
 
-                if (($comment === false) && (substr($token, 0, 1) === "#")) {
+                if (($comment === false) && (substr($token, 0, 1) === "#") && empty($backTicks)) {
                     $comment = $i;
                     $inline = true;
                 }
